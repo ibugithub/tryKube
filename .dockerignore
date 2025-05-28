@@ -1,0 +1,20 @@
+# Ignore local virtual environments
+helloEnv/
+
+# Ignore __pycache__ and other Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Ignore SQLite DB if you're using external DB in prod
+db.sqlite3
+
+# Ignore git and editor files
+.git/
+*.swp
+*.swo
+*.bak
+*.log
+*.vscode/
+*.idea/
