@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learning-exercise-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: learning-exercise-app
+  template:
+    metadata:
+      labels:
+        app: learning-exercise-app
+    spec:
+      containers:
+        - name: learning-exercise-container
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:latest
+          ports:
+            - containerPort: 8000
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: learning-exercise-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: learning-exercise-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
