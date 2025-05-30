@@ -1,0 +1,78 @@
+create cluster :
+=> eksctl create cluster \
+    --name exercises-learning \
+    --region us-east-2 \
+    --nodegroup-name linux-nodes \
+    --node-type t3.small \ 
+    --nodes 2 \                         
+    --nodes-min 1 \ 
+    --nodes-max 3 \  
+    --managed
+
+check cluster :
+=> eksctl get cluster
+
+delete cluster :
+=> eksctl delete cluster --name GameServer --region us-east-2
+
+create ecr :
+=> aws ecr create-repository --repository-name exercises-learning-ecr
+
+check ecr :
+=> aws ecr describe-repositories
+
+list ecr :
+=> aws ecr describe-repositories --query 'repositories[*].repositoryName' --output table
+
+delete ecr :
+=> aws ecr delete-repository --repository-name exercises-learning-ecr --force
+
+apply kubectl :
+=> kubectl apply -f k8s/deployment.yml
+
+kubectl roolout :
+=> kubectl rollout restart deployment learning-exercise-deployment
+
+get running pods :
+=> kubectl get pods
+
+get elb uri :
+=> kubectl get svc learning-exercise-service
+
+
+get security groups table way :
+=> aws ec2 describe-security-groups --query 'SecurityGroups[*].[GroupId,GroupName]' --output table --region us-east-2
+
+
+
+
+create oidc provider :
+=> eksctl utils associate-iam-oidc-provider \
+  --region us-east-2 \
+  --cluster exercises-learning \
+  --approve
+
+check oidc provider :
+=> eksctl get iamidentitymapping --cluster exercises-learning --region us-east-2
+
+create Iam policy :
+aws iam create-policy \
+  --policy-name exercise-learning-s3-policy \
+  --policy-document file://s3-access-policy.json
+
+check iam policy :
+=> aws iam list-policies
+
+create service account :
+=> eksctl create iamserviceaccount \
+  --name exercise-learning-sa \
+  --namespace default \
+  --cluster exercises-learning \
+  --attach-policy-arn arn:aws:iam::156583401143:policy/exercise-learning-s3-policy \
+  --approve \
+  --region us-east-2 
+
+check iam service account :
+=> kubectl get serviceaccounts
+
+
