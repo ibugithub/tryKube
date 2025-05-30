@@ -21,4 +21,5 @@ from helloApp import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.hello, name='hello'),
+    path('download/', views.download_file_view)
 ]
