@@ -12,9 +12,9 @@ spec:
       labels:
         app: learning-exercise-app
     spec:
-      serviceAccountName: learning-exercise-sa
+      serviceAccountName: exercise-learning-sa
       containers:
-        - name: learning-exercise-container
+        - name: learning-exercise-container 
           image: "156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:latest"
           ports:
             - containerPort: 8000
