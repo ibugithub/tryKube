@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: learning-exercise-app-config
+  namespace: learning-exercise-namespace
+data:
+  WELCOME_MESSAGE: "Welcome to the demo app!"

@@ -12,22 +12,16 @@ spec:
       labels:
         app: learning-exercise-app
     spec:
+      serviceAccountName: exercise-learning-sa
       containers:
         - name: learning-exercise-container 
           image: "156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:latest"
           ports:
             - containerPort: 8000
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: learning-exercise-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: learning-exercise-app
-  ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 8000
+          env:
+            - name: WELCOME_MESSAGE
+              valueFrom:
+                configMapKeyRef:
+                  name: learning-exercise-app-config
+                  key: WELCOME_MESSAGE
