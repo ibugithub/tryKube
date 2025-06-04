@@ -1,7 +1,6 @@
 check credential validity :
 => aws sts get-caller-identity
 
-
 create cluster :
 => eksctl create cluster \
     --name exercises-learning \
