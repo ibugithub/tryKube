@@ -45,8 +45,6 @@ get elb uri :
 get security groups table way :
 => aws ec2 describe-security-groups --query 'SecurityGroups[*].[GroupId,GroupName]' --output table --region us-east-2
 
-check iam service account :
-=> kubectl get serviceaccounts
 
 check available namespace :
 => kubectl get namespaces
@@ -101,6 +99,12 @@ create service account :
   --attach-policy-arn arn:aws:iam::156583401143:policy/exercise-learning-s3-policy \
   --approve \
   --region us-east-2 
+
+check iam service account :
+=> kubectl get serviceaccounts
+
+check serviceAccouts with full details :
+=> kubectl get serviceaccounts learning-exercise-sa -n learning-exercise-namespace -o yaml
 
 
 get OIDC provider ARN :
