@@ -78,3 +78,21 @@ create service account :
 check iam service account :
 => kubectl get serviceaccounts
 
+check available namespace :
+=> kubectl get namespaces
+
+check namespace for all : 
+=> kubectl get pods --all-namespaces
+
+check deployments :
+=> kubectl get deployments -n learning-exercise-namespace
+
+
+
+debugging-----
+
+check deployment status :
+=> kubectl describe deployment learning-exercise-deployment -n learning-exercise-namespace
+
+check detailed error of the deployment :
+=> kubectl describe rs learning-exercise-deployment-78d94dd7 -n learning-exercise-namespace

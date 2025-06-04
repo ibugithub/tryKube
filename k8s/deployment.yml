@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: learning-exercise-deployment
+  namespace: learning-exercise-namespace
 spec:
   replicas: 2
   selector:
@@ -12,7 +13,7 @@ spec:
       labels:
         app: learning-exercise-app
     spec:
-      serviceAccountName: exercise-learning-sa
+      serviceAccountName: learning-exercise-sa
       containers:
         - name: learning-exercise-container 
           image: "156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:latest"
