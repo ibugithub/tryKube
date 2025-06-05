@@ -37,7 +37,7 @@ delete the kubectl pods :
 => kubectl apply -f k8s/deployment.yml
 
 kubectl roolout :
-=> kubectl rollout restart deployment learning-exercise-deployment
+=> kubectl rollout restart deployment learning-exercise-deployment -n learning-exercise-namespace
 
 get running pods :
 => kubectl get pods
@@ -57,7 +57,6 @@ check namespace for all :
 
 check deployments :
 => kubectl get deployments -n learning-exercise-namespace
-
 
 
 debugging-----
