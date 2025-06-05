@@ -16,7 +16,7 @@ check cluster :
 => eksctl get cluster
 
 delete cluster :
-=> eksctl delete cluster --name GameServer --region us-east-2
+=> eksctl delete cluster --name exercises-learning --region us-east-2
 
 create ecr :
 => aws ecr create-repository --repository-name exercises-learning-ecr
@@ -129,3 +129,8 @@ Attatch policy with iam role :
 => aws iam attach-role-policy \
   --role-name learning-exercise-role \
   --policy-arn arn:aws:iam::156583401143:policy/learning-exercise-policy
+
+
+Run apply using kustomize :
+kubectl apply -k overlays/dev/
+kubectl apply -k overlays/prod/
