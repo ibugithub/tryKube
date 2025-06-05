@@ -5,8 +5,3 @@ metadata:
   namespace: learning-exercise-namespace
 spec:
   replicas: 2
-  template:
-    spec:
-      containers:
-        - name: learning-exercise-container
-          image: "156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:latest"

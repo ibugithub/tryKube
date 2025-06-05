@@ -8,3 +8,9 @@ resources:
 
 patches:
   - path: deployment-patch.yaml
+
+configMapGenerator:
+  - name: learning-exercise-app-config
+    behavior: replace
+    literals:
+      - WELCOME_MESSAGE=Welcome from PROD!

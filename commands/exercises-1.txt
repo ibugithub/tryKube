@@ -78,14 +78,14 @@ create oidc provider :
   --cluster exercises-learning \
   --approve
 
-check oiDc provider for the cluster :
+check oiDc provider for the cluster (IRSA) :
 => aws eks describe-cluster \
   --name exercises-learning \
   --region us-east-2 \
   --query "cluster.identity.oidc.issuer" \
   --output text
 
-check oidc provider :
+check oidc provider (RABC) :
 => eksctl get iamidentitymapping --cluster exercises-learning --region us-east-2
 
 create Iam policy :
