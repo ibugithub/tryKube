@@ -2,10 +2,11 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: learning-exercise-deployment
+  namespace: learning-exercise-namespace
 spec:
   replicas: 2
   template:
     spec:
       containers:
         - name: learning-exercise-container
-          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:prod
+          image: "156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr:latest"

@@ -33,6 +33,9 @@ delete ecr :
 apply kubectl :
 => kubectl apply -f k8s/deployment.yml
 
+delete the kubectl pods :
+=> kubectl apply -f k8s/deployment.yml
+
 kubectl roolout :
 => kubectl rollout restart deployment learning-exercise-deployment
 
@@ -74,6 +77,13 @@ create oidc provider :
   --region us-east-2 \
   --cluster exercises-learning \
   --approve
+
+check oiDc provider for the cluster :
+=> aws eks describe-cluster \
+  --name exercises-learning \
+  --region us-east-2 \
+  --query "cluster.identity.oidc.issuer" \
+  --output text
 
 check oidc provider :
 => eksctl get iamidentitymapping --cluster exercises-learning --region us-east-2
@@ -131,6 +141,17 @@ Attatch policy with iam role :
   --policy-arn arn:aws:iam::156583401143:policy/learning-exercise-policy
 
 
+
+Update the Iam role :
+=> aws iam update-assume-role-policy \
+  --role-name learning-exercise-role \
+  --policy-document file://trust-policy.json
+
+
+
 Run apply using kustomize :
-kubectl apply -k overlays/dev/
-kubectl apply -k overlays/prod/
+=> kubectl apply -k overlays/dev/
+=> kubectl apply -k overlays/prod/
+
+To delte the applied :
+=> kubectl delete -k overlays/dev/

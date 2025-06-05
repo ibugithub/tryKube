@@ -9,7 +9,7 @@
       "Action": "sts:AssumeRoleWithWebIdentity",
       "Condition": {
         "StringEquals": {
-          "oidc.eks.us-east-2.amazonaws.com/id/A7D1F536B0C601E68A799BFB28E19F14:sub": "system:serviceaccount:learning-exercise-namespace:learning-exercise-sa"
+          "oidc.eks.us-east-2.amazonaws.com/id/84EB1881FA15F49DE698AE8E6AF0304F:sub": "system:serviceaccount:learning-exercise-namespace:learning-exercise-sa"
         }
       }
     }
