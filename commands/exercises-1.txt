@@ -63,10 +63,10 @@ check deployments :
 debugging-----
 
 check deployment status :
-=> kubectl describe deployment learning-exercise-deployment -n learning-exercise-namespace
+=> kubectl describe deployment learning-exercise-deployment -n le-na-dev
 
 check detailed error of the deployment :
-=> kubectl describe rs learning-exercise-deployment-78d94dd7 -n learning-exercise-namespace
+=> kubectl describe rs learning-exercise-deployment-7d6cfc5584 -n le-na-prod
 
 
 
