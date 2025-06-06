@@ -52,6 +52,7 @@ get security groups table way :
 check available namespace :
 => kubectl get namespaces
 
+
 check namespace for all : 
 => kubectl get pods --all-namespaces
 
