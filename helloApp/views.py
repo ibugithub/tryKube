@@ -5,7 +5,7 @@ import os
 
 def hello(request):
   msg = os.environ.get('WELCOME_MESSAGE', 'Hello, World!')
-  print(f"Message from environment: {msg}")
+  print(f"---- Message from environment ----: {msg}")
   return render(request, 'hello.html', {'message': msg})
   
   

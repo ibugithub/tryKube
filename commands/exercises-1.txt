@@ -141,7 +141,6 @@ Attatch policy with iam role :
   --policy-arn arn:aws:iam::156583401143:policy/learning-exercise-policy
 
 
-
 Update the Iam role :
 => aws iam update-assume-role-policy \
   --role-name learning-exercise-role \
@@ -155,3 +154,10 @@ Run apply using kustomize :
 
 To delte the applied :
 => kubectl delete -k overlays/dev/
+
+check inside the pod :
+=> kubectl exec -it learning-exercise-deployment-74b76855f6-p8jmc -n learning-exercise-namespace -- printenv WELCOME_MESSAGE
+
+
+check log of pods :
+=> kubectl logs learning-exercise-deployment-6b975748dc-tz4tr -n learning-exercise-namespace
