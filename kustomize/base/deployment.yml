@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: learning-exercise-deployment
-  namespace: learning-exercise-namespace
 spec:
   replicas: 2
   selector:

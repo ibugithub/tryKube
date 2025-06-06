@@ -126,7 +126,7 @@ get OIDC provider ARN :
 
 create Iam Role :
 => aws iam create-role \
-  --role-name learning-exercise-role \
+  --role-name le-ro \
   --assume-role-policy-document file://trust-policy.json
 
 check Iam role by name :
@@ -137,13 +137,13 @@ List Iam roles :
 
 Attatch policy with iam role :
 => aws iam attach-role-policy \
-  --role-name learning-exercise-role \
+  --role-name le-ro \
   --policy-arn arn:aws:iam::156583401143:policy/learning-exercise-policy
 
 
 Update the Iam role :
 => aws iam update-assume-role-policy \
-  --role-name learning-exercise-role \
+  --role-name le-ro\
   --policy-document file://trust-policy.json
 
 
@@ -161,3 +161,4 @@ check inside the pod :
 
 check log of pods :
 => kubectl logs learning-exercise-deployment-6b975748dc-tz4tr -n learning-exercise-namespace
+
