@@ -12,6 +12,7 @@ create cluster :
     --nodes-max 3 \  
     --managed
 
+
 check cluster :
 => eksctl get cluster
 
