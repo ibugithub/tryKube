@@ -66,7 +66,7 @@ check deployment status :
 => kubectl describe deployment learning-exercise-deployment -n le-na-dev
 
 check detailed error of the deployment :
-=> kubectl describe rs learning-exercise-deployment-7d6cfc5584 -n le-na-prod
+=> kubectl describe rs learning-exercise-deployment-7ccf86755d-gkdgn  -n le-na-dev
 
 
 
