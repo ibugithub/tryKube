@@ -1,0 +1,28 @@
+
+creating the chart :
+=> helm create learning-helm
+
+installing the helm :
+=> helm install learn-helm  learning-helm
+with custom value:
+=> helm install le-dev-app le-charts -f le-charts/helm-values/dev-values.yaml
+
+list helm app:
+helm list -a
+
+To list available helm repo:
+=> helm repo list
+
+To Update Helm repos:
+=> helm repo update
+
+To search a repo:
+=> helm search repo actions-runner-controller
+
+upgrading the helm :
+=> helm upgrade learn-helm learning-helm
+
+create secret key:
+=> kubectl create secret generic arc-auth-secret \
+  --from-literal=github_token=github_pat \
+  -n arc-systems

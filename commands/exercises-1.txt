@@ -66,7 +66,7 @@ check deployment status :
 => kubectl describe deployment learning-exercise-deployment -n le-na-dev
 
 check detailed error of the deployment :
-=> kubectl describe rs learning-exercise-deployment-7ccf86755d-gkdgn  -n le-na-dev
+=> kubectl describe pod learning-exercise-deployment-7ccf86755d  -n le-na-dev
 
 
 
@@ -162,3 +162,14 @@ check inside the pod :
 check log of pods :
 => kubectl logs learning-exercise-deployment-6b975748dc-tz4tr -n learning-exercise-namespace
 
+check nodeGroup role---->
+aws eks describe-nodegroup \
+  --cluster-name exercises-learning \
+  --nodegroup-name linux-nodes \
+  --region us-east-2 \
+  --query "nodegroup.nodeRole" \
+  --output text
+
+Check the policies in the role=====>
+aws iam list-attached-role-policies \
+  --role-name eksctl-exercises-learning-nodegrou-NodeInstanceRole-WExpF0eeB0Na

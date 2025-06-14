@@ -1,0 +1,13 @@
+apiVersion: actions.summerwind.dev/v1alpha1
+kind: RunnerScaleSet
+metadata:
+  name: arc-runner-set
+  namespace: arc-systems
+spec:
+  githubConfigUrl: https://github.com/ibugithub/tryKube
+  githubConfigSecret: controller-manager
+  template:
+    spec:
+      containers:
+        - name: runner
+          image: summerwind/actions-runner:latest
