@@ -1,0 +1,12 @@
+name: Test Self-Hosted Runner
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  self-hosted-runner-test:
+    runs-on: self-hosted
+    steps:
+      - name: Say Hello
+        run: echo "✅ Hello from self-hosted GitHub Actions Runner in Kubernetes!"
