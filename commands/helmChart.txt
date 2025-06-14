@@ -1,0 +1,14 @@
+
+creating the chart :
+=> helm create learning-helm
+
+installing the helm :
+=> helm install learn-helm  learning-helm
+with custom value:
+=> helm install le-dev-app le-charts -f le-charts/helm-values/dev-values.yaml
+
+list helm app:
+helm list -a
+
+upgrading the helm :
+=> helm upgrade learn-helm learning-helm

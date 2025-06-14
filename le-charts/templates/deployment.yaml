@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "learning-exercise.fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ include "learning-exercise.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "learning-exercise.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "learning-exercise.name" . }}
+    spec:
+      serviceAccountName: {{ .Values.serviceAccount.name }}
+      containers:
+        - name: {{ include "learning-exercise.name" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          env:
+            - name: WELCOME_MESSAGE
+              value: "{{ .Values.config.welcomeMessage }}"
+
+            - name: PGHOST
+              value: {{ printf "%s-postgresql" .Release.Name }}
+            - name: PGUSER
+              value: {{ .Values.postgresql.auth.username }}
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-postgresql" .Release.Name }}
+                  key: postgres-password
+            - name: PGDATABASE
+              value: {{ .Values.postgresql.auth.database }}
+
+
+{{- if .Values.nginx.enabled }}
+        - name: nginx
+          image: "{{ .Values.nginx.image }}:{{ .Values.nginx.tag }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ .Values.nginx.port }}
+{{- end }}

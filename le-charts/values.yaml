@@ -1,0 +1,38 @@
+replicaCount: 2  # DEV and PROD can override this via `--values` file
+
+image:
+  repository: 156583401143.dkr.ecr.us-east-2.amazonaws.com/exercises-learning-ecr
+  pullPolicy: IfNotPresent
+  tag: latest
+
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+
+config:
+  welcomeMessage: "REPLACE"  # Will override per environment
+
+serviceAccount:
+  create: true
+  name: le-sa
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::156583401143:role/le-ro
+
+namespace: default
+
+nginx:
+  enabled: true
+  image: nginx
+  tag: latest
+  port: 80
+
+postgresql:
+  enabled: true
+  auth:
+    username: myuser
+    password: mypassword
+    database: mydb
+  primary:
+    persistence:
+      enabled: false
