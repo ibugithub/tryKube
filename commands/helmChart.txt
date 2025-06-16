@@ -26,3 +26,6 @@ create secret key:
 => kubectl create secret generic arc-auth-secret \
   --from-literal=github_token=github_pat \
   -n arc-systems
+
+create manifest:
+=> kustomize build overlays/dev --enable-helm --load-restrictor LoadRestrictionsNone > manifest.yaml
