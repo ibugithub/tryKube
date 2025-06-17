@@ -40,11 +40,11 @@ NAMESPACE="arc-runners"
 GITHUB_CONFIG_URL="https://github.com/ibugithub/tryKube"
 GITHUB_PAT="ghp_nUNd9G42TobK4qj....."
 helm install "${INSTALLATION_NAME}" \
-    --namespace "${NAMESPACE}" \
-    --create-namespace \
-    --set githubConfigUrl="${GITHUB_CONFIG_URL}" \
-    --set githubConfigSecret.github_token="${GITHUB_PAT}" \
-    oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
+  --namespace "${NAMESPACE}" \
+  --create-namespace \
+  --set githubConfigUrl="${GITHUB_CONFIG_URL}" \
+  --set githubConfigSecret.github_token="${GITHUB_PAT}" \
+  oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 
 
 
@@ -80,4 +80,7 @@ check runner creation :
 
 Check token validity:
 => curl -H "Authorization: token ghp_nUNd9G42TobK..." \
-     https://api.github.com/repos/ibugithub/tryKube
+  https://api.github.com/repos/ibugithub/tryKube
+
+
+
