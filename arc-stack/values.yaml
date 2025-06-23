@@ -10,6 +10,10 @@ gha-runner-scale-set:
     github_token: "use-from-secret"
 
   runnerNamespace: arc-runners
+  
+  controllerServiceAccount:
+    name: arc-gha-controller
+    namespace: arc-systems
 
   template:
     spec:

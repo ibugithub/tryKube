@@ -84,3 +84,11 @@ Check token validity:
 
 
 
+Install helm dependencies :
+=> helm dependency build
+
+Build manifest.yaml:
+=> kustomize build . --enable-helm --load-restrictor LoadRestrictionsNone > manifest.yaml
+
+Apply Manifest to kubernities:
+=> kubectl apply -f manifest.yaml

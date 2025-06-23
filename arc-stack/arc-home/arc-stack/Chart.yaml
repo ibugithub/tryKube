@@ -1,13 +1,12 @@
 apiVersion: v2
 name: arc-stack
-description: Deploys both GitHub ARC controller and runner set
-type: application
+description: Helm chart for GitHub ARC controller and runner scale set
 version: 0.1.0
-
+type: application
 dependencies:
-  - name: gha-runner-scale-set
+  - name: gha-runner-scale-set-controller
     version: 0.12.0
     repository: oci://ghcr.io/actions/actions-runner-controller-charts
-  - name: gha-runner-scale-set-controller
+  - name: gha-runner-scale-set
     version: 0.12.0
     repository: oci://ghcr.io/actions/actions-runner-controller-charts
