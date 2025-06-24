@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - namespaces.yaml
-  - rolebinding.yaml
   - crds/actions.github.com_autoscalinglisteners.yaml
   - crds/actions.github.com_autoscalingrunnersets.yaml
   - crds/actions.github.com_ephemeralrunners.yaml

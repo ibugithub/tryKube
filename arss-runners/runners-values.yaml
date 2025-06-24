@@ -1,6 +1,7 @@
 githubConfigUrl: "https://github.com/ibugithub/trykube"
 githubConfigSecret: arc-secret
 
+
 runnerScaleSetName: arc-runner-set
 minReplicas: 1
 maxReplicas: 5
@@ -13,6 +14,9 @@ enableListener: true
 version: "0.12.0"
 
 template:
+  metadata:
+    annotations:
+      actions.github.com/ttl: "300"
     spec:
       containers:
         - name: runner

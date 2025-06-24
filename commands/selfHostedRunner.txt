@@ -101,3 +101,13 @@ Apply Manifest to kubernities:
 
 Checking whether the CRDS are installed :
 => kubectl get crd | grep -E 'runnerscalesets|autoscalingrunnersets|autoscalinglisteners|ephemeralrunners'
+
+checking listener pods:
+=> kubectl logs pod <listener-pod-name> -n arc-systems
+=> kubectl describe pod <listener-pod-name> -n arc-systems
+
+Is listener pods created:
+=> kubectl get autoscalingrunnersets -n arc-runners
+
+Check listeners status :
+=> kubectl logs -f deployment/arc-controller-gha-rs-controller -n arc-systems

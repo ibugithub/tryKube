@@ -116,15 +116,6 @@ subjects:
   name: arc-controller-gha-rs-controller
   namespace: arc-systems
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: arc-secret
-  namespace: arc-runners
-stringData:
-  github_token: ghp_nUNd9G42.....
-type: Opaque
----
 apiVersion: actions.github.com/v1alpha1
 kind: AutoscalingRunnerSet
 metadata:
@@ -132,7 +123,7 @@ metadata:
     actions.github.com/cleanup-manager-role-binding: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-manager-role-name: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-no-permission-service-account-name: arc-runner-set-gha-rs-no-permission
-    actions.github.com/values-hash: a9a172b04ee488dd7ccd023335d4029b4436fdb60ed980dd1eb55538c8762e2
+    actions.github.com/values-hash: 338fab47fec37f1dc6874bf9569491377db0b65649ca1e09fbcffb5d46ca074
   labels:
     actions.github.com/scale-set-name: arc-runner-set
     actions.github.com/scale-set-namespace: arc-runners
@@ -150,15 +141,14 @@ spec:
   githubConfigUrl: https://github.com/ibugithub/trykube
   runnerScaleSetName: arc-runner-set
   template:
+    metadata:
+      annotations:
+        actions.github.com/ttl: "300"
     spec:
       containers:
-      - name: runner
-        resources:
-          limits:
-            cpu: "2"
-            memory: 2Gi
-          requests:
-            cpu: "1"
-            memory: 1Gi
+      - command:
+        - /home/runner/run.sh
+        image: ghcr.io/actions/actions-runner:latest
+        name: runner
       restartPolicy: Never
       serviceAccountName: arc-runner-set-gha-rs-no-permission
