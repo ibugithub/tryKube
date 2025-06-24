@@ -76,7 +76,7 @@ upgradig arc-runner-set :
 
 
 check runner creation :
-=> ` `
+=> kubectl logs arc-controller-gha-rs-controller -n arc-systems
 
 Check token validity:
 => curl -H "Authorization: token ghp_nUNd9G42TobK..." \
@@ -96,3 +96,8 @@ Apply Manifest to kubernities:
 
 
 => kubectl apply -f manifest.yaml --server-side --force-conflicts
+
+
+
+Checking whether the CRDS are installed :
+=> kubectl get crd | grep -E 'runnerscalesets|autoscalingrunnersets|autoscalinglisteners|ephemeralrunners'

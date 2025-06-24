@@ -9,5 +9,5 @@ roleRef:
   name: arc-controller-gha-rs 
 subjects:
 - kind: ServiceAccount
-  name: gha-rs-controller
+  name: arc-controller-gha-rs-controller
   namespace: arc-systems

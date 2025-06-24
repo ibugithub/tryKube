@@ -1,14 +1,13 @@
 githubConfigUrl: "https://github.com/ibugithub/trykube"
-
 githubConfigSecret: arc-secret
 
 runnerScaleSetName: arc-runner-set
-minReplicas: 0
+minReplicas: 1
 maxReplicas: 5
 
 controllerServiceAccount:
   namespace: arc-systems
-  name: arc-gha-controller
+  name: arc-controller-gha-rs-controller
 
 enableListener: true
 version: "0.12.0"

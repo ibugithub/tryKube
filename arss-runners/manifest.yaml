@@ -10,8 +10,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: arc-runner-set
     app.kubernetes.io/part-of: gha-rs
-    app.kubernetes.io/version: 0.11.0
-    helm.sh/chart: gha-rs-0.11.0
+    app.kubernetes.io/version: 0.12.0
+    helm.sh/chart: gha-rs-0.12.0
   name: arc-runner-set-gha-rs-no-permission
   namespace: arc-runners
 ---
@@ -28,8 +28,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: arc-runner-set
     app.kubernetes.io/part-of: gha-rs
-    app.kubernetes.io/version: 0.11.0
-    helm.sh/chart: gha-rs-0.11.0
+    app.kubernetes.io/version: 0.12.0
+    helm.sh/chart: gha-rs-0.12.0
   name: arc-runner-set-gha-rs-manager
   namespace: arc-runners
 rules:
@@ -103,8 +103,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: arc-runner-set
     app.kubernetes.io/part-of: gha-rs
-    app.kubernetes.io/version: 0.11.0
-    helm.sh/chart: gha-rs-0.11.0
+    app.kubernetes.io/version: 0.12.0
+    helm.sh/chart: gha-rs-0.12.0
   name: arc-runner-set-gha-rs-manager
   namespace: arc-runners
 roleRef:
@@ -113,8 +113,17 @@ roleRef:
   name: arc-runner-set-gha-rs-manager
 subjects:
 - kind: ServiceAccount
-  name: arc-gha-controller
+  name: arc-controller-gha-rs-controller
   namespace: arc-systems
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: arc-secret
+  namespace: arc-runners
+stringData:
+  github_token: ghp_nUNd9G42.....
+type: Opaque
 ---
 apiVersion: actions.github.com/v1alpha1
 kind: AutoscalingRunnerSet
@@ -123,7 +132,7 @@ metadata:
     actions.github.com/cleanup-manager-role-binding: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-manager-role-name: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-no-permission-service-account-name: arc-runner-set-gha-rs-no-permission
-    actions.github.com/values-hash: 714387c30b46c3974b5b223551ff44189961a94339a6c8c8497074a3b0e7c9f
+    actions.github.com/values-hash: a9a172b04ee488dd7ccd023335d4029b4436fdb60ed980dd1eb55538c8762e2
   labels:
     actions.github.com/scale-set-name: arc-runner-set
     actions.github.com/scale-set-namespace: arc-runners
@@ -132,8 +141,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: arc-runner-set
     app.kubernetes.io/part-of: gha-rs
-    app.kubernetes.io/version: 0.11.0
-    helm.sh/chart: gha-rs-0.11.0
+    app.kubernetes.io/version: 0.12.0
+    helm.sh/chart: gha-rs-0.12.0
   name: arc-runner-set
   namespace: arc-runners
 spec:
