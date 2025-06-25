@@ -109,6 +109,7 @@ checking listener pods:
 Is listener pods created:
 => kubectl get autoscalingrunnersets -n arc-runners
 
+
 Check listeners status :
 => kubectl logs -f deployment/arc-controller-gha-rs-controller -n arc-systems
 
