@@ -115,4 +115,4 @@ Check listeners status :
 
 
 to check the runner-pods status: 
-=> kubectl describe pod arc-runner-set-754b578d-listener -n arc-runners
+=> kubectl describe pod arc-runner-set-754b578d-listener -n arc-systems
