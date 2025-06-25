@@ -111,3 +111,8 @@ Is listener pods created:
 
 Check listeners status :
 => kubectl logs -f deployment/arc-controller-gha-rs-controller -n arc-systems
+
+
+
+to check the runner-pods status: 
+=> kubectl describe pod arc-runner-set-754b578d-listener -n arc-runners

@@ -1,4 +1,6 @@
 gha-runner-scale-set:
+  runnerLabels:
+    - arc-runner-set
   githubConfigUrl: "https://github.com/ibugithub/trykube"
 
   githubConfigSecret: arc-secret
