@@ -1,0 +1,26 @@
+gha-runner-scale-set:
+  githubConfigUrl: "https://github.com/ibugithub/trykube"
+
+  githubConfigSecret: arc-secret
+  runnerScaleSetName: arc-runner-set
+  minReplicas: 1
+  maxReplicas: 5
+
+  controllerServiceAccount:
+    namespace: arc-systems
+    name: arc-controller-gha-rs-controller
+
+  template:
+    metadata:
+      annotations:
+        actions.github.com/ttl: "300"
+    spec:
+      containers:
+        - name: runner
+          resources:
+            limits:
+              cpu: "2"
+              memory: "2Gi"
+            requests:
+              cpu: "1"
+              memory: "1Gi"

@@ -1,0 +1,12 @@
+apiVersion: v2
+name: arc-runner-set
+description: Thin wrapper that pulls in gha-runner-scale-set with sane defaults
+type: application
+version: 0.1.0 
+appVersion: "0.12.0"
+
+dependencies:
+  - name: gha-runner-scale-set
+    alias: gha-runner-scale-set
+    version: "0.12.0"
+    repository: "oci://ghcr.io/actions/actions-runner-controller-charts"
