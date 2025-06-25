@@ -6,7 +6,7 @@ on:
 
 jobs:
   self-hosted-runner-test:
-    runs-on: [self-hosted, arc-runner-set]
+    runs-on: arc-runner-set
     steps:
       - name: Say Hello
         run: echo "✅ Hello from self-hosted GitHub Actions Runner in Kubernetes!"
