@@ -1,7 +1,5 @@
-resources:
-  - secret-pat.yaml
-
 helmCharts:
   - name: arc-runner-set
     releaseName: arc-runner-set
     namespace: arc-runners
+    valuesFile: values.yaml

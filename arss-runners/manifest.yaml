@@ -116,15 +116,6 @@ subjects:
   name: arc-controller-gha-rs-controller
   namespace: arc-systems
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: arc-secret
-  namespace: arc-runners
-stringData:
-  github_token: ghp_nUNd9G42T
-type: Opaque
----
 apiVersion: actions.github.com/v1alpha1
 kind: AutoscalingRunnerSet
 metadata:

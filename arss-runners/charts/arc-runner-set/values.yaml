@@ -1,12 +1,10 @@
 gha-runner-scale-set:
-  runnerLabels:
-    - arc-runner-set
   githubConfigUrl: "https://github.com/ibugithub/trykube"
 
   githubConfigSecret: arc-secret
   runnerScaleSetName: arc-runner-set
-  minReplicas: 1
-  maxReplicas: 5
+  minRunners: 1
+  maxRunners: 5
 
   controllerServiceAccount:
     namespace: arc-systems
