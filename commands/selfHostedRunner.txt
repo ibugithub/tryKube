@@ -110,10 +110,12 @@ Is listener pods created:
 => kubectl get autoscalingrunnersets -n arc-runners
 
 
-Check listeners status :
+To Check the deployment logs:
 => kubectl logs -f deployment/arc-controller-gha-rs-controller -n arc-systems
 
 
-
-to check the runner-pods status: 
+to check the runner-pod descriptions: 
 => kubectl describe pod arc-runner-set-754b578d-listener -n arc-systems
+
+To check the pod logs :
+=> kubectl logs arc-runner-set-754b578d-listener -n arc-systems
