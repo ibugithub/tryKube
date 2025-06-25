@@ -123,7 +123,7 @@ metadata:
     actions.github.com/cleanup-manager-role-binding: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-manager-role-name: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-no-permission-service-account-name: arc-runner-set-gha-rs-no-permission
-    actions.github.com/values-hash: f92eb3e10591342ac75ed0763bfd46a924ed2c9297d80dffe4ac26272b61e6e
+    actions.github.com/values-hash: 00cb4a47952e259b626fe52c2245ed0ef1e6c0fda97a61ab59972b27b97ddbe
   labels:
     actions.github.com/scale-set-name: arc-runner-set
     actions.github.com/scale-set-namespace: arc-runners
@@ -152,5 +152,12 @@ spec:
         - /home/runner/run.sh
         image: ghcr.io/actions/actions-runner:latest
         name: runner
+        resources:
+          limits:
+            cpu: "2"
+            memory: 2Gi
+          requests:
+            cpu: "1"
+            memory: 1Gi
       restartPolicy: Never
       serviceAccountName: arc-runner-set-gha-rs-no-permission
