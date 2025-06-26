@@ -1,19 +1,20 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: arss-runners
+  name: argo-staging
   namespace: argocd
 spec:
   project: default
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: staging
   source:
     repoURL: https://github.com/ibugithub/trykube.git
     targetRevision: main
-    path: arss-runners
-    directory:
-      recurse: true
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: arc-runners     # choose whatever NS you like
+    path: argo-repo/chartApp
+    helm:
+      values: |
+        replicaCount: 1
   syncPolicy:
     automated:
       prune: true
