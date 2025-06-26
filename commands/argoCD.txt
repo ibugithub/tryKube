@@ -1,0 +1,61 @@
+To check pointing cluster:
+=> kubectl config current-context
+
+
+To Install argocd:
+=> kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+Download argocdCLI :
+=> curl -LO https://github.com/argoproj/argo-cd/releases/download/v3.0.6/argocd-linux-amd64
+install => sudo install -m 555 argocd-linux-amd64 /usr/local/bin/argocd
+
+
+port-forward argocd server :
+=> kubectl port-forward svc/argocd-server -n argocd 8080:443
+
+to get the initial password :
+=> argocd admin initial-password -n argocd
+
+to get the initial password secret :
+=> kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
+
+To delete the initial password :
+=> kubectl delete secret argocd-initial-admin-secret -n argocd
+
+To login :
+=> argocd login localhost:8080 --insecure --grpc-web
+
+To login directly :
+=> argocd login localhost:8080 --username admin --password amijanina1% --insecure
+
+update the password :
+=> argocd account update-password
+
+
+
+
+--------
+-------
+
+
+
+app management:
+
+create app:
+=> argocd app create guestbook \
+  --repo https://github.com/argoproj/argocd-example-apps.git \
+  --path guestbook \
+  --dest-server https://kubernetes.default.svc \
+  --dest-namespace default
+
+deploy :
+=> argocd app sync guestbook
+
+view app info :
+=>argocd app get guestbook
+
+List app :
+=> argocd app list
+
+Delete the app :
+=> argocd app delete guestbook --cascade

@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arss-runners
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ibugithub/trykube.git
+    targetRevision: main
+    path: arss-runners
+    directory:
+      recurse: true
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: arc-runners     # choose whatever NS you like
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

@@ -123,7 +123,7 @@ metadata:
     actions.github.com/cleanup-manager-role-binding: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-manager-role-name: arc-runner-set-gha-rs-manager
     actions.github.com/cleanup-no-permission-service-account-name: arc-runner-set-gha-rs-no-permission
-    actions.github.com/values-hash: 00cb4a47952e259b626fe52c2245ed0ef1e6c0fda97a61ab59972b27b97ddbe
+    actions.github.com/values-hash: 158f58daf5afacf1569e721cb8af7f530386f557608b9a27d3dff8dc3e055f6
   labels:
     actions.github.com/scale-set-name: arc-runner-set
     actions.github.com/scale-set-namespace: arc-runners
@@ -137,7 +137,7 @@ metadata:
   name: arc-runner-set
   namespace: arc-runners
 spec:
-  githubConfigSecret: arc-secret
+  githubConfigSecret: pre-defined-secret
   githubConfigUrl: https://github.com/ibugithub/trykube
   maxRunners: 5
   minRunners: 1

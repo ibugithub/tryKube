@@ -94,7 +94,7 @@ Apply Manifest to kubernities:
 => kubectl apply -f manifest.yaml
 
 
-
+Applying on server-sider:
 => kubectl apply -f manifest.yaml --server-side --force-conflicts
 
 

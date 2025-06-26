@@ -1,7 +1,7 @@
 gha-runner-scale-set:
   githubConfigUrl: "https://github.com/ibugithub/trykube"
 
-  githubConfigSecret: arc-secret
+  githubConfigSecret: pre-defined-secret
   runnerScaleSetName: arc-runner-set
   minRunners: 1
   maxRunners: 5

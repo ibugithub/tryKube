@@ -1,0 +1,21 @@
+
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: arc-setup               # shows up in the Argo UI
+  namespace: argocd             # must live in the argocd NS
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/ibugithub/tryKube.git
+    targetRevision: main        # branch / tag / SHA
+    path: arc-setup             # <-- folder that has kustomization.yaml
+    directory:
+      recurse: true             # lets kustomize follow bases/patches
+  destination:
+    server: https://kubernetes.default.svc   # the in-cluster API
+    namespace: arc-system       # where arc-setup objects will be created
+  syncPolicy:
+    automated:                  # ⇐ optional - remove if you prefer manual
+      prune: true               # delete resources no longer in Git
+      selfHeal: true            # revert manual changes (anti-drift)
