@@ -18,3 +18,7 @@ spec:
     automated:
       prune: true
       selfHeal: true
+
+  ignoreDifferences:
+  - group: kustomize.config.k8s.io
+    kind: Kustomization
