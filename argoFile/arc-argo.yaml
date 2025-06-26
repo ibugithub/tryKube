@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/ibugithub/tryKube.git
+    repoURL: https://github.com/ibugithub/trykube.git
     targetRevision: main        # branch / tag / SHA
     path: arc-setup             # <-- folder that has kustomization.yaml
     directory:
