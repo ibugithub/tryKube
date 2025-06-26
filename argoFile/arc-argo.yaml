@@ -19,7 +19,3 @@ spec:
     automated:                  # ⇐ optional - remove if you prefer manual
       prune: true               # delete resources no longer in Git
       selfHeal: true            # revert manual changes (anti-drift)
-  
-  ignoreDifferences:
-  - group: kustomize.config.k8s.io
-    kind: Kustomization
