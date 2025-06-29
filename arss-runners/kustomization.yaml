@@ -3,3 +3,6 @@ helmCharts:
     releaseName: arc-runner-set
     namespace: arc-runners
     valuesFile: values.yaml
+
+resources:
+  - configmap.yaml

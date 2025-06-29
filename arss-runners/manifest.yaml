@@ -116,6 +116,15 @@ subjects:
   name: arc-controller-gha-rs-controller
   namespace: arc-systems
 ---
+apiVersion: v1
+data:
+  environment: staging
+  feature_flag: "true"
+kind: ConfigMap
+metadata:
+  name: my-config
+  namespace: arc-runners
+---
 apiVersion: actions.github.com/v1alpha1
 kind: AutoscalingRunnerSet
 metadata:
