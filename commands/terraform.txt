@@ -1,0 +1,9 @@
+To setup the directory :
+=> terraform init 
+
+Preview changes:
+=> terraform plan
+
+
+Apply changes:
+=> terraform apply

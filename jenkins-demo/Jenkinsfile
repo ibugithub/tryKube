@@ -1,0 +1,10 @@
+pipeline {
+  agent { label 'master' }
+  stages {
+    stage('Hello') {
+      steps {
+        echo 'Hello from Jenkins master!'
+      }
+    }
+  }
+}

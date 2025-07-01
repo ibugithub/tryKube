@@ -1,0 +1,28 @@
+Install SDKMan :
+=> curl -s "https://get.sdkman.io" | bash 
+
+Install java :
+=> sdk install java 11.0.20-tem
+
+Adding Jenkins repo :
+=> curl -fsSL https://pkg.jenkins.io/debian/jenkins.io-2023.key | sudo tee \
+=> sudo sh -c 'echo deb https://pkg.jenkins.io/debian binary/ > /etc/apt/sources.list.d/jenkins.list'
+
+
+then need to update and upgrade to update the apt source :
+=> sudo apt update
+= sudo apt upgrade
+
+install jenkins :
+=> sudo apt install jenkins
+
+enable jenkins :
+=> sudo systemctl enable jenkins
+
+start jenkins :
+=> sudo systemctl start jenkins
+
+check jenkins status :
+=> sudo systemctl status jenkins
+
+
