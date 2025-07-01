@@ -4,11 +4,11 @@ pipelineJob('hello-from-jenkinsfile') {
             scm {
                 git {
                     remote {
-                        url('https://github.com/ibugithub/jenkins-demo.git') 
+                        url('https://github.com/ibugithub/tryKube.git')
                     }
                     branches('main')
                 }
-                scriptPath('Jenkinsfile')
+                scriptPath('jenkins-demo/Jenkinsfile')
             }
         }
     }
