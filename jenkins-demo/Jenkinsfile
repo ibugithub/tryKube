@@ -1,9 +1,9 @@
 pipeline {
-  agent { label 'master' }
+  agent any
   stages {
     stage('Hello') {
       steps {
-        echo 'Hello from Jenkins master!'
+        echo 'Hello from Jenkins!'
       }
     }
   }
