@@ -2,5 +2,7 @@ tryKubeEnv
 helloEnv
 arc-setup/charts
 create-secret.txt
-terraForm-demo/.terraform
+terraForm-exercise-1/.terraform
 .env
+terraForm-exercise-2/.terraform
+jenkins-exercise-2/.terraform
