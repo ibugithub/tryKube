@@ -7,3 +7,9 @@ Preview changes:
 
 Apply changes:
 => terraform apply
+
+Untaint any resourse:
+=> terraform untaint aws_iam_policy.s3_specific_bucket
+
+Taint any resourse :
+=> terraform taint aws_instance.demo
