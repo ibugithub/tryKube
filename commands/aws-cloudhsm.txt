@@ -1,16 +1,25 @@
+
+step-1 Installing .deb packages:
+
 Latest CloudHSM client deb pacakges:
-wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
-wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
-wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
-wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
+=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
+=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
+=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
+=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
+
+installing the deb packages:
+=> sudo dpkg -i cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
+=> sudo dpkg -i cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
+=> sudo dpkg -i cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
+=> sudo dpkg -i cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
 
 Install common dependencies:
 => sudo apt install -y libjson-c-dev libssl-dev libengine-pkcs11-openssl
 
 
 Fixing broken pacakges:
-sudo apt update
-sudo apt --fix-broken install -y
+=> sudo apt update
+=> sudo apt --fix-broken install -y
 
 
 Find CIDR of vpc:
@@ -22,3 +31,58 @@ List all the subnets of a vpc:
   --filters "Name=vpc-id,Values=$(aws ec2 describe-vpcs --filters Name=isDefault,Values=true --region us-east-2 --query 'Vpcs[0].VpcId' --output text)" \
   --region us-east-2 \
   --query "Subnets[*].{CIDR:CidrBlock,AZ:AvailabilityZone}" --output table
+
+
+
+steps -2 Install apksigner:
+
+install dependencies:
+=> sudo apt install -y unzip curl openjdk-11-jdk
+
+Create SDK Folder and Download Command-line Tools:
+=> mkdir -p ~/android-sdk && cd ~/android-sdk
+=> curl -O https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
+=> unzip commandlinetools-linux-10406996_latest.zip -d androad-adk/cmdline-tools
+
+
+Configure SDK Environment:
+=> export ANDROID_HOME=$HOME/android-sdk
+=> export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
+
+Install sdkmanager and Build Tools (includes apksigner):
+accept license:
+=> yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
+=> sdkmanager --sdk_root=$ANDROID_HOME "build-tools;34.0.0"
+
+Add apksigner to Your PATH:
+=> export PATH=$ANDROID_HOME/build-tools/34.0.0:$PATH
+
+Apk signer installation confirmation:
+=> which apksigner
+=> apksigner version
+
+
+
+steps 3: Test apksigner without Hsm:
+Create a Java Keystore (JKS) with a Key Pair:
+=> keytool -genkeypair \
+  -v \
+  -keystore local.jks \
+  -keyalg RSA \
+  -keysize 2048 \
+  -validity 10000 \
+  -alias mykey \
+  -storepass password \
+  -keypass password \
+  -dname "CN=Test, OU=Test, O=Test, L=Test, S=Test, C=US"` 
+
+
+Sign an apk:
+=>  apksigner sign \
+  --ks local.jks \
+  --ks-key-alias mykey \
+  --ks-pass pass:password \
+  --key-pass pass:password \
+  --min-sdk-version 21 \
+  --out signed.apk \
+  dummy.apk
