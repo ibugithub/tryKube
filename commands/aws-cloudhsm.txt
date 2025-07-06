@@ -1,0 +1,24 @@
+Latest CloudHSM client deb pacakges:
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
+
+Install common dependencies:
+=> sudo apt install -y libjson-c-dev libssl-dev libengine-pkcs11-openssl
+
+
+Fixing broken pacakges:
+sudo apt update
+sudo apt --fix-broken install -y
+
+
+Find CIDR of vpc:
+=> aws ec2 describe-vpcs --filters "Name=isDefault,Values=true" --region us-east-2 --query "Vpcs[*].CidrBlock"
+
+
+List all the subnets of a vpc:
+=> aws ec2 describe-subnets \
+  --filters "Name=vpc-id,Values=$(aws ec2 describe-vpcs --filters Name=isDefault,Values=true --region us-east-2 --query 'Vpcs[0].VpcId' --output text)" \
+  --region us-east-2 \
+  --query "Subnets[*].{CIDR:CidrBlock,AZ:AvailabilityZone}" --output table

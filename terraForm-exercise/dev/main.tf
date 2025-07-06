@@ -89,7 +89,7 @@ resource "aws_iam_instance_profile" "ec2_profile" {
 
 resource "aws_instance" "demo" {
   ami           = "ami-0c55b159cbfafe1f0"
-  instance_type = "t2.micro"
+  instance_type = var.instance_type
   key_name = aws_key_pair.ssh_key.key_name
   vpc_security_group_ids = [aws_security_group.allow_ssh.id]
   iam_instance_profile = aws_iam_instance_profile.ec2_profile.name
@@ -104,6 +104,6 @@ resource "aws_instance" "demo" {
               EOF
 
   tags = {
-    Name = "TerraformDemoEC2"
+    Name = var.instance_name
   }
 }

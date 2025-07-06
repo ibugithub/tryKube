@@ -2,11 +2,10 @@ tryKubeEnv
 helloEnv
 arc-setup/charts
 create-secret.txt
-terraForm-exercise/.terraform
 .env
-terraForm-exercise-2/.terraform
-jenkins-exercise-2/.terraform
-terraForm-exercise/terraform.tfstate
-terraForm-exercise-2/terraform.tfstate
-terraForm-exercise-2/terraform.tfstate.backup
-terraForm-exercise/terraform.tfstate.backup
+
+
+*.terraform
+*.tfstate
+*.tfstate.backup
+*.tfvars

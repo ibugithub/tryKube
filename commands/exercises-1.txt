@@ -7,7 +7,7 @@ create cluster :
     --region us-east-2 \
     --nodegroup-name linux-nodes \
     --node-type t3.small \ 
-    --nodes 2 \                         
+    --nodes 1 \                         
     --nodes-min 1 \ 
     --nodes-max 3 \  
     --managed

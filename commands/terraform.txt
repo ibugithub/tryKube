@@ -11,5 +11,14 @@ Apply changes:
 Untaint any resourse:
 => terraform untaint aws_iam_policy.s3_specific_bucket
 
-Taint any resourse :
+Mark a resource for recreation:
 => terraform taint aws_instance.demo
+
+See what resources are in the state:
+=> terraform state list
+
+Refresh state from actual infrastructure:
+=> terraform refresh
+
+Apply with var file :
+=> terraform apply -var-file="prod.tfvars"
