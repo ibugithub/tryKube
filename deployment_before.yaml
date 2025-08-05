@@ -4,6 +4,9 @@ metadata:
   name: metric-sender-before-low
   labels:
     app: metric-sender
+    tags.datadoghq.com/env: eks
+    tags.datadoghq.com/service: metric-sender-app
+    tags.datadoghq.com/version: v1
 spec:
   replicas: 1
   selector:
@@ -13,6 +16,9 @@ spec:
     metadata:
       labels:
         app: metric-sender
+        admission.datadoghq.com/enabled: "true"
+      annotations:
+        admission.datadoghq.com/python-lib.version: v3.11.2
     spec:
       containers:
         - name: sender

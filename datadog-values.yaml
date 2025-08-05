@@ -1,0 +1,25 @@
+datadog:
+  apiKeyExistingSecret: datadog-secret
+  clusterName: exercises-learning
+  site: us5.datadoghq.com
+
+  logs:
+    enabled: true
+
+  apm:
+    enabled: true
+
+  processAgent:
+    enabled: true
+
+  checksCardinality: orchestrator
+
+  dogstatsd:
+    tagCardinality: orchestrator
+
+
+agents:
+  daemonset:
+    useHostPort: true
+
+targetSystem: linux
