@@ -16,5 +16,5 @@ while True:
         "env:eks",
         "app:cardinality-check"
     ])
-    print("Metric sent")
+    print("Metric sent", flush=True)
     time.sleep(10)

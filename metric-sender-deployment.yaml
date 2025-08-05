@@ -17,6 +17,7 @@ spec:
       containers:
         - name: sender
           image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender:before-low
+          imagePullPolicy: Always
           env:
             - name: DD_AGENT_HOST
               valueFrom:
