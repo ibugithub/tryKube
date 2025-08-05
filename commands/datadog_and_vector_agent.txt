@@ -1,0 +1,87 @@
+
+Installing DataDog Agent:
+
+
+1: Add the Datadog Helm repository :
+
+helm repo add datadog https://helm.datadoghq.com
+helm repo update
+kubectl create secret generic datadog-secret --from-literal api-key=<DATADOG_API_KEY>
+
+
+2: Configure datadog-values.yaml
+
+Create a file, datadog-values.yaml, that contains ->
+datadog:
+ apiKeyExistingSecret: datadog-secret
+ clusterName: <CLUSTER_NAME> example : 5cdea018....
+ site: <DATADOG_SITE> example: us5.datadoghq.com
+
+
+
+3: Deploy Agent with the above configuration file:
+
+Run:
+helm install datadog-agent -f datadog-values.yaml datadog/datadog
+
+
+
+Install VectorDotDev:
+
+1: Adding the Helm repo
+
+helm repo add vector https://helm.vector.dev
+helm repo update
+
+
+2: Configure values.yaml
+
+create a secret key named datadog-api-key :
+kubectl create secret generic datadog-api-key \
+  --from-literal=DATADOG_API_KEY=<YOUR_DD_API_KEY> \
+  --namespace vector
+
+Create a file, values.yaml, that contains :
+
+role: Agent
+
+secrets:
+  generic: {}
+
+env:
+  - name: VECTOR_HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+
+envFrom:
+  - secretRef:
+      name: datadog-api-key
+
+customConfig:
+  sources:
+    internal_metrics:
+      type: internal_metrics
+  sinks:
+    datadog_metrics:
+      type: datadog_metrics
+      inputs: ["internal_metrics"]
+      site: us5.datadoghq.com
+      default_api_key: ${DATADOG_API_KEY}
+
+service:
+  enabled: false
+
+
+3: Install :
+
+helm install vector vector/vector \
+  --namespace vector \
+  --create-namespace \
+  --values values.yaml
+
+4: if you want to update:
+
+helm upgrade vector vector/vector \
+  --namespace vector \
+  --values values.yaml

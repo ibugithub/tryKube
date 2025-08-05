@@ -9,7 +9,7 @@ create cluster :
     --node-type t3.small \ 
     --nodes 1 \                         
     --nodes-min 1 \ 
-    --nodes-max 3 \  
+    --nodes-max 2 \  
     --managed
 
 check cluster :

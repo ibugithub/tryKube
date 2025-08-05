@@ -3,15 +3,15 @@ step-1 Installing .deb packages:
 
 Latest CloudHSM client deb pacakges:
 => wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
-=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
-=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
-=> wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
+wget https://s3.amazonaws.com/cloudhsmv2-software/CloudHsmClient/Jammy/cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
 
 installing the deb packages:
 => sudo dpkg -i cloudhsm-cli_5.16.0-1_u22.04_amd64.deb
-=> sudo dpkg -i cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
-=> sudo dpkg -i cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
-=> sudo dpkg -i cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
+sudo dpkg -i cloudhsm-dyn_5.16.0-1_u22.04_amd64.deb
+sudo dpkg -i cloudhsm-jce_5.16.0-1_u22.04_amd64.deb
+sudo dpkg -i cloudhsm-pkcs11_5.16.0-1_u22.04_amd64.deb
 
 Install common dependencies:
 => sudo apt install -y libjson-c-dev libssl-dev libengine-pkcs11-openssl
@@ -19,7 +19,7 @@ Install common dependencies:
 
 Fixing broken pacakges:
 => sudo apt update
-=> sudo apt --fix-broken install -y
+sudo apt --fix-broken install -y
 
 
 Find CIDR of vpc:
@@ -40,17 +40,18 @@ install dependencies:
 => sudo apt install -y unzip curl openjdk-11-jdk
 
 Create SDK Folder and Download Command-line Tools:
-=> mkdir -p ~/android-sdk && cd ~/android-sdk
+=> mkdir -p ~/android-sdk
 => curl -O https://dl.google.com/android/repository/commandlinetools-linux-10406996_latest.zip
-=> unzip commandlinetools-linux-10406996_latest.zip -d androad-adk/cmdline-tools
+=> unzip commandlinetools-linux-10406996_latest.zip -d android-sdk/cmdline-tools
 
 
 Configure SDK Environment:
 => export ANDROID_HOME=$HOME/android-sdk
-=> export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
+export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
 
 Install sdkmanager and Build Tools (includes apksigner):
 accept license:
+=> sudo apt install sdkmanager
 => yes | sdkmanager --sdk_root=$ANDROID_HOME --licenses
 => sdkmanager --sdk_root=$ANDROID_HOME "build-tools;34.0.0"
 
@@ -60,6 +61,146 @@ Add apksigner to Your PATH:
 Apk signer installation confirmation:
 => which apksigner
 => apksigner version
+
+
+
+
+Creating a minimal Android app:
+=> mkdir minimal-android && cd minimal-android
+
+create settings.gradle.kts:
+=> cat > settings.gradle.kts <<EOF
+pluginManagement {
+    repositories {
+        google()
+        gradlePluginPortal()
+    }
+}
+rootProject.name = "minimal"
+include(":app")
+EOF
+
+
+
+create app/build.gradle.kts:
+=> cat > app/build.gradle.kts <<EOF
+plugins {
+    id("com.android.application")
+    kotlin("android") version "1.9.0"
+}
+android {
+    namespace = "com.example.hello"
+    compileSdk = 34
+
+    defaultConfig {
+        applicationId = "com.example.hello"
+        minSdk = 21
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    buildFeatures {
+        viewBinding = false
+        compose = false
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+}
+dependencies {
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("androidx.appcompat:appcompat:1.7.0")
+}
+EOF
+
+
+
+create ap/src/main/AndroidManifest.xml:
+=> cat > app/src/main/AndroidManifest.xml <<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.hello">
+
+    <application
+        android:label="Hello"
+        android:theme="@style/Theme.AppCompat.Light">
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>
+
+EOF
+
+
+
+
+Create app/src/main/java/com/example/hello/MainActivity.kt:
+cat > app/src/main/java/com/example/hello/MainActivity.kt <<EOF
+package com.example.hello
+import android.app.Activity
+import android.os.Bundle
+import android.widget.TextVi
+class MainActivity : Activity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val tv = TextView(this)
+        tv.text = "Hello, minimal!"
+        setContentView(tv)
+    }
+}
+EOF
+
+
+
+create build.gradle.kts:
+=> cat > build.gradle.kts <<EOF
+plugins {
+    id("com.android.application") version "8.4.0" apply false
+    kotlin("android") version "1.9.0" apply false
+}
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+tasks.register("clean", Delete::class) {
+    delete(rootProject.buildDir)
+}
+EOF
+
+create gradle.properties
+=> echo -e "org.gradle.jvmargs=-Xmx1536m\nandroid.useAndroidX=true" > gradle.properties
+
+
+
+download gradle :
+=> wget https://services.gradle.org/distributions/gradle-8.6-bin.zip
+unzip gradle-8.6-bin.zip
+
+Add path:
+=> export PATH=$HOME/gradle-8.6/bin:$PATH
+
+Make gradle portable :
+=> graddle wrapper
+chmod +x gradlew
+
+Build the app:
+=> ./gradlew :app:assembleDebug
 
 
 
@@ -74,15 +215,24 @@ Create a Java Keystore (JKS) with a Key Pair:
   -alias mykey \
   -storepass password \
   -keypass password \
-  -dname "CN=Test, OU=Test, O=Test, L=Test, S=Test, C=US"` 
+  -dname "CN=Test, OU=Test, O=Test, L=Test, S=Test, C=US"
 
+install apksinger:
+=> sudo apt install apksigner
 
 Sign an apk:
 =>  apksigner sign \
-  --ks local.jks \
+  --ks ~/local.jks \
   --ks-key-alias mykey \
   --ks-pass pass:password \
   --key-pass pass:password \
-  --min-sdk-version 21 \
-  --out signed.apk \
-  dummy.apk
+  --out app-debug-signed.apk \
+  minimal-android/app/build/outputs/apk/debug/app-debug.apk
+
+
+verify the sginature:
+=> apksigner verify --print-certs app-debug-signed.apk
+
+
+
+
