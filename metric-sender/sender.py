@@ -9,7 +9,7 @@ options = {
 }
 
 initialize(**options)
-
+print('hello from metric-sender', flush=True)
 while True:
     statsd.increment("for_ingestion_tags_before", tags=[
         f"host:{socket.gethostname()}",
