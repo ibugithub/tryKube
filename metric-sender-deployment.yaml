@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metric-sender-before-low
+  labels:
+    app: metric-sender
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metric-sender
+  template:
+    metadata:
+      labels:
+        app: metric-sender
+    spec:
+      containers:
+        - name: sender
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender:before-low
+          env:
+            - name: DD_AGENT_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DD_DOGSTATSD_PORT
+              value: "8125"
