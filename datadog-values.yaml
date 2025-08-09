@@ -15,9 +15,10 @@ datadog:
   checksCardinality: orchestrator
 
   dogstatsd:
+    nonLocalTraffic: true
+    originDetection: true
     tagCardinality: orchestrator
-
-
+    
 agents:
   daemonset:
     useHostPort: true

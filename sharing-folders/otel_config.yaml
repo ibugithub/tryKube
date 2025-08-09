@@ -1,0 +1,71 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+
+processors:
+  resourcedetection/ec2:
+    detectors: ["ec2"]
+    ec2:
+      tags: ["^.*$"]
+      max_attempts: 5
+
+  # Strip "ec2.tag." prefix from *keys* using OTTL
+  transform/remove_ec2_tag_prefix:
+    error_mode: ignore
+    trace_statements:
+      - context: resource
+        statements:
+          - replace_all_patterns(attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
+          - delete_matching_keys(attributes, "^ec2\\.tag\\..*$")
+    metric_statements:
+      - context: resource
+        statements:
+          - replace_all_patterns(attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
+          - delete_matching_keys(attributes, "^ec2\\.tag\\..*$")
+    log_statements:
+      - context: resource
+        statements:
+          - replace_all_patterns(attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
+          - delete_matching_keys(attributes, "^ec2\\.tag\\..*$")
+
+  batch:
+    send_batch_size: 10
+    send_batch_max_size: 100
+    timeout: 10s
+
+exporters:
+  datadog:
+    api:
+      site: us5.datadoghq.com
+      key: ${env:DD_API_KEY}
+    host_metadata:
+      enabled: false
+    metrics:
+      resource_attributes_as_tags: true
+      histograms:
+        mode: distributions
+
+extensions:
+  health_check: {}
+  pprof: {}
+  zpages: {}
+
+service:
+  extensions: [health_check, pprof, zpages]
+  pipelines:
+    traces:
+      receivers:  [otlp]
+      processors: [resourcedetection/ec2, transform/remove_ec2_tag_prefix, batch]
+      exporters:  [datadog]
+    metrics:
+      receivers:  [otlp]
+      processors: [resourcedetection/ec2, transform/remove_ec2_tag_prefix, batch]
+      exporters:  [datadog]
+    logs:
+      receivers:  [otlp]
+      processors: [resourcedetection/ec2, transform/remove_ec2_tag_prefix, batch]
+      exporters:  [datadog]
