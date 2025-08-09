@@ -13,24 +13,26 @@ processors:
       tags: ["^.*$"]
       max_attempts: 5
 
-  # Strip "ec2.tag." prefix from *keys* using OTTL
+  resource/add_env_tags:
+    attributes:
+      - action: upsert
+        key: organization
+        value: ${env:ORGANIZATION_NAME}
+
   transform/remove_ec2_tag_prefix:
     error_mode: ignore
     trace_statements:
       - context: resource
         statements:
-          - replace_all_patterns(attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
-          - delete_matching_keys(attributes, "^ec2\\.tag\\..*$")
+          - replace_all_patterns(resource.attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
     metric_statements:
       - context: resource
         statements:
-          - replace_all_patterns(attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
-          - delete_matching_keys(attributes, "^ec2\\.tag\\..*$")
+          - replace_all_patterns(resource.attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
     log_statements:
       - context: resource
         statements:
-          - replace_all_patterns(attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
-          - delete_matching_keys(attributes, "^ec2\\.tag\\..*$")
+          - replace_all_patterns(resource.attributes, "key", "^ec2\\.tag\\.(.*)$", "$1")
 
   batch:
     send_batch_size: 10
@@ -59,13 +61,14 @@ service:
   pipelines:
     traces:
       receivers:  [otlp]
-      processors: [resourcedetection/ec2, transform/remove_ec2_tag_prefix, batch]
+      processors: [resourcedetection/ec2, resource/add_env_tags, transform/remove_ec2_tag_prefix, batch]
       exporters:  [datadog]
     metrics:
       receivers:  [otlp]
-      processors: [resourcedetection/ec2, transform/remove_ec2_tag_prefix, batch]
+      processors: [resourcedetection/ec2, resource/add_env_tags, transform/remove_ec2_tag_prefix, batch]
       exporters:  [datadog]
     logs:
       receivers:  [otlp]
-      processors: [resourcedetection/ec2, transform/remove_ec2_tag_prefix, batch]
+      processors: [resourcedetection/ec2, resource/add_env_tags, transform/remove_ec2_tag_prefix, batch]
       exporters:  [datadog]
+      
