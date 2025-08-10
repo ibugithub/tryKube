@@ -34,5 +34,5 @@ jobs:
           ECR_REPOSITORY: metric-sender-with-agent-python
           IMAGE_TAG: with-agent-python
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_agent_python/metric-sender-with-agent-python
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_agent_python/metric-sender-agent-python
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
