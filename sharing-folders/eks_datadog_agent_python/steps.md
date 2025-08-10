@@ -35,7 +35,7 @@ kubectl get ns datadog
 ```yaml
 kubectl create secret generic datadog-secret \
   -n datadog \
-  --from-literal api-key='5cdea018e.......'
+  --from-literal api-key='5cdea01...'
 ```
 
 You can verify that your `datadog-secret` was created in the `datadog` namespace with:
@@ -138,7 +138,7 @@ Create `requirements.txt`:
 datadog==0.49.1
 ```
 
-## 3.2 Dockerfile
+## Dockerfile
 
 Create `Dockerfile`
 
@@ -155,5 +155,152 @@ RUN useradd -u 10001 pyuser
 USER pyuser
 
 CMD ["python", "app.py"]
+```
 
+# Push the Image To ECR
+
+Create ECR
+
+```yaml
+aws ecr create-repository --repository-name metric-sender-with-agent-python
+```
+
+Create a .github/workflows/metric-sender-with-agent-python.yaml file
+
+```yaml
+name: Build and Push metric-sender-with-agent-python to ECR
+
+on:
+  push:
+    paths:
+      - 'sharing-folders/eks_datadog_agent_python/**'
+      - '.github/workflows/metric-sender-with-agent-python.yaml'
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push metric-sender-with-agent-python to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: metric-sender-with-agent-python
+          IMAGE_TAG: with-agent-python
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_agent_python/metric-sender-agent-python
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+
+```
+
+Push to Ecr by git
+
+```yaml
+git add .
+git commit -m '..'
+git push origin main
+```
+
+# Deploy the sender app
+
+1. Get your full ECR image UR
+
+```bash
+AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+AWS_REGION=us-east-2
+IMAGE_URI="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/metric-sender-with-agent-python:with-agent-python"
+echo $IMAGE_URI
+```
+
+create a deployment.yaml and use the full image_uri
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metric-sender-agent-python
+  namespace: datadog
+  labels:
+    app: metric-sender-agent-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metric-sender-agent-python
+  template:
+    metadata:
+      labels:
+        app: metric-sender-agent-python
+    spec:
+      containers:
+        - name: app
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-agent-python:with-agent-python
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOGSTATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DOGSTATSD_PORT
+              value: "8125"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
+
+```
+
+apply the yaml
+
+```yaml
+kubectl apply -f deployment.yaml -n datadog
+
+# verify by logs
+kubectl logs <pod name> -n datadog
+# details log
+kubectl -n datadog describe pod <pod name> (metric-sender-66ff56f796-cwll4) 
+```
+
+verify 
+
+```yaml
+kubectl -n datadog rollout status deploy/metric-sender-agent-python
+kubectl -n datadog get pods -l app=metric-sender-agent-python -o wide
+kubectl -n datadog logs -f deploy/metric-sender-agent-python --tail=50
+```
+
+## Make Python logs unbuffered (so you can see them)
+
+Patch your Deployment to add `PYTHONUNBUFFERED=1`:
+
+```bash
+kubectl -n datadog patch deploy metric-sender-agent-python --type='json' -p='[
+  {"op":"add","path":"/spec/template/spec/containers/0/env/-","value":{"name":"PYTHONUNBUFFERED","value":"1"}}
+]'
+
+kubectl -n datadog rollout status deploy/metric-sender-agent-python
+kubectl -n datadog logs -f deploy/metric-sender-agent-python --tail=50
 ```
