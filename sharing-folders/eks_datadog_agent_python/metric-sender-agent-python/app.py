@@ -1,4 +1,4 @@
-import os, time
+import os, time, sys
 from datadog import DogStatsd
 
 # Prefer UDS if available (more reliable locally), else UDP
@@ -14,10 +14,17 @@ else:
 
 print(f"DogStatsD transport -> {transport}")
 
-while True:
+MAX_TRIES = 10
+failures = 0
+
+for i in range(1, MAX_TRIES + 1):
   try:
     statsd.increment("ingestion_datadog", tags=["app:py-dogstatsd", "env:dev"])
-    print("queued metric (DogStatsD)")
+    print(f"[{i}/{MAX_TRIES}] queued metric (DogStatsD)")
   except Exception as e:
-    print(f"FAILED to send metric: {e}")
+    failures += 1
+    print(f"[{i}/{MAX_TRIES}] FAILED to send metric: {e}")
   time.sleep(5)
+
+print(f"Done. Attempts={MAX_TRIES}, Failures={failures}")
+sys.exit(1 if failures == MAX_TRIES else 0)

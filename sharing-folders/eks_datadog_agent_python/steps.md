@@ -35,7 +35,7 @@ kubectl get ns datadog
 ```yaml
 kubectl create secret generic datadog-secret \
   -n datadog \
-  --from-literal api-key='5cdea018e3f97b9fbfd267fe342bb3a8'
+  --from-literal api-key='5cdea018e.......'
 ```
 
 You can verify that your `datadog-secret` was created in the `datadog` namespace with:

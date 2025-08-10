@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metric-sender-agent-python
+  namespace: datadog
+  labels:
+    app: metric-sender-agent-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metric-sender-agent-python
+  template:
+    metadata:
+      labels:
+        app: metric-sender-agent-python
+    spec:
+      containers:
+        - name: app
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-agent-python:with-agent-python
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DOGSTATSD_HOST
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+            - name: DOGSTATSD_PORT
+              value: "8125"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
