@@ -1,0 +1,14 @@
+datadog:
+  site: us5.datadoghq.com
+  apiKeyExistingSecret: datadog-secret
+  dogstatsd:
+    port: 8125
+    useHostPort: true
+    nonLocalTraffic: true
+  kubelet:
+    tlsVerify: false
+
+# Admission Controller injects DD_AGENT_HOST/DD_* tags into pods automatically
+admissionController:
+  enabled: true
+  mutateUnlabelled: true
