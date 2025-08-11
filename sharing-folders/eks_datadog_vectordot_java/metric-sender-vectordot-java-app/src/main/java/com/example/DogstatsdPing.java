@@ -11,7 +11,7 @@ public class DogstatsdPing {
 
   public static void main(String[] args) throws InterruptedException {
     final String udsPath = getenvOr("DOGSTATSD_SOCKET", "");
-    final String metric = "ingestion_datadog_vectordot_java";
+    final String metric = "ingestion_datadog_vectordot_java_v2";
     final String[] tags = new String[] {"app:datadog_vectordot_java", "env:dev"};
 
     NonBlockingStatsDClientBuilder b = new NonBlockingStatsDClientBuilder();

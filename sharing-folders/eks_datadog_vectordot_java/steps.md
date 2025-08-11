@@ -26,7 +26,6 @@ create a vector-values.yaml file
 ```yaml
 cat > vector-values.yaml <<'YAML'
 role: "Agent"
-replicaCount: 1
 service:
   enabled: false
 hostNetwork: true
