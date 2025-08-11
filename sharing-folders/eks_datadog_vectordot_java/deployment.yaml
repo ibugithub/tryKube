@@ -1,31 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metric-sender-vectordot-python
+  name: metric-sender-vectordot-java
   namespace: vector
   labels:
-    app: metric-sender-vectordot-python
+    app: metric-sender-vectordot-java
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: metric-sender-vectordot-python
+      app: metric-sender-vectordot-java
   template:
     metadata:
       labels:
-        app: metric-sender-vectordot-python
+        app: metric-sender-vectordot-java
     spec:
       containers:
         - name: app
-          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python:with-vectordot-python
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-java:with-vectordot-java
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
               value: "vector.vector.svc.cluster.local"
             - name: DOGSTATSD_PORT
               value: "9125"
-            - name: PYTHONUNBUFFERED
-              value: "1"
           resources:
             requests:
               cpu: 50m

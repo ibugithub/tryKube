@@ -18,7 +18,7 @@ create secret key
 
 ```yaml
 kubectl -n vector create secret generic datadog-secret \
-  --from-literal=api-key='5cdea018....'
+  --from-literal=api-key='5cdea018e3f97b9fbfd267fe342bb3a8'
 ```
 
 create a vector-values.yaml file
@@ -114,46 +114,159 @@ kubectl -n vector logs pod/vector-0 --tail=50
 
 ## Write the app
 
-Create `app.py`:
+Create sharing-folders/eks_datadog_vectordot_java/metric-sender-vectordot-java-app/src/main/java/com/example/DogstatsdPing.java
 
-```python
-import os, time, sys
-from datadog import DogStatsd
+```java
+package com.example;
 
-# Prefer UDS if available (more reliable locally), else UDP
-socket_path = os.getenv("DOGSTATSD_SOCKET")
-if socket_path:
-  statsd = DogStatsd(socket_path=socket_path)
-  transport = f"uds:{socket_path}"
-else:
-  host = os.getenv("DOGSTATSD_HOST", "127.0.0.1")
-  port = int(os.getenv("DOGSTATSD_PORT", "8125"))
-  statsd = DogStatsd(host=host, port=port)
-  transport = f"udp:{host}:{port}"
+import com.timgroup.statsd.NonBlockingStatsDClientBuilder;
+import com.timgroup.statsd.StatsDClient;
 
-print(f"DogStatsD transport -> {transport}")
+public class DogstatsdPing {
+  private static String getenvOr(String k, String def) {
+    String v = System.getenv(k);
+    return (v == null || v.isEmpty()) ? def : v;
+  }
 
-MAX_TRIES = 10
-failures = 0
+  public static void main(String[] args) throws InterruptedException {
+    final String udsPath = getenvOr("DOGSTATSD_SOCKET", "");
+    final String metric = "ingestion_datadog_vectordot_java";
+    final String[] tags = new String[] {"app:datadog_vectordot_java", "env:dev"};
 
-for i in range(1, MAX_TRIES + 1):
-  try:
-    statsd.increment("ingestion_datadog_agent_python", tags=["app:datadog_agent_python", "env:dev"])
-    print(f"[{i}/{MAX_TRIES}] queued metric (DogStatsD)")
-  except Exception as e:
-    failures += 1
-    print(f"[{i}/{MAX_TRIES}] FAILED to send metric: {e}")
-  time.sleep(5)
+    NonBlockingStatsDClientBuilder b = new NonBlockingStatsDClientBuilder();
+    String transport;
 
-print(f"Done. Attempts={MAX_TRIES}, Failures={failures}")
-sys.exit(1 if failures == MAX_TRIES else 0)
+    if (!udsPath.isEmpty()) {
+      // Prefer UDS if available
+      b.address("unix://" + udsPath);
+      transport = "uds:" + udsPath;
+    } else {
+      // Fallback to UDP
+      String host = getenvOr("DOGSTATSD_HOST", "127.0.0.1");
+      int port = Integer.parseInt(getenvOr("DOGSTATSD_PORT", "8125"));
+      b.hostname(host).port(port);
+      transport = "udp:" + host + ":" + port;
+    }
+
+    StatsDClient client = b.build();
+    System.out.println("DogStatsD transport -> " + transport);
+
+    final int MAX_TRIES = 10;
+    int failures = 0;
+
+    for (int i = 1; i <= MAX_TRIES; i++) {
+      try {
+        client.count(metric, 1, tags);
+        System.out.printf("[%d/%d] queued metric (DogStatsD)%n", i, MAX_TRIES);
+      } catch (Exception e) {
+        failures++;
+        System.out.printf("[%d/%d] FAILED to send metric: %s%n", i, MAX_TRIES, e);
+      }
+      Thread.sleep(5000);
+    }
+
+    System.out.printf("Done. Attempts=%d, Failures=%d%n", MAX_TRIES, failures);
+    System.exit(failures == MAX_TRIES ? 1 : 0);
+  }
+}
 
 ```
 
-Create `requirements.txt`:
+Create `sharing-folders/eks_datadog_vectordot_java/metric-sender-vectordot-java-app/pom.xml`
+
+```xml
+xml
+CopyEdit
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.example</groupId>
+  <artifactId>metric-sender-vectordot-java</artifactId>
+  <version>1.0.0</version>
+
+  <properties>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <!-- DogStatsD Java client -->
+    <dependency>
+      <groupId>com.datadoghq</groupId>
+      <artifactId>java-dogstatsd-client</artifactId>
+      <version>4.4.4</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <!-- Make it runnable -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.example.DogstatsdPing</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <!-- Copy dependencies -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.6.1</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <phase>package</phase>
+            <goals><goal>copy-dependencies</goal></goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/dependency</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>
 
 ```
-datadog==0.49.1
+
+install maven
+
+```java
+sudo apt install maven
+```
+
+1. Verify which compiler you’re using. and check the versions of the following
+
+```bash
+which javac
+javac -version
+java  -version
+mvn -v
+```
+
+build locally before pushing to ecr
+
+```java
+cd sharing-folders/eks_datadog_vectordot_java/metric-sender-vectordot-java-app
+mvn clean package
+```
+
+Quick local run test
+
+If you have a DogStatsD listener locally (Datadog Agent/Vector on UDP 8125):
+
+```bash
+DOGSTATSD_HOST=127.0.0.1 DOGSTATSD_PORT=8125 \
+java -cp target/metric-sender-vectordot-java-1.0.0.jar:target/dependency/* \
+  com.example.DogstatsdPing
 ```
 
 ## Dockerfile
@@ -183,7 +296,7 @@ Create ECR
 aws ecr create-repository --repository-name metric-sender-with-vectordot-python
 ```
 
-Create a .github/workflows/metric-sender-with-agent-python.yaml file
+Create a .github/workflows/metric-sender-with-vector-java.yaml file
 
 ```yaml
 name: Build and Push metric-sender-with-vectordot to ECR
@@ -252,31 +365,29 @@ create a deployment.yaml and use the full image_uri
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metric-sender-vectordot-python
+  name: metric-sender-vectordot-java
   namespace: vector
   labels:
-    app: metric-sender-vectordot-python
+    app: metric-sender-vectordot-java
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: metric-sender-vectordot-python
+      app: metric-sender-vectordot-java
   template:
     metadata:
       labels:
-        app: metric-sender-vectordot-python
+        app: metric-sender-vectordot-java
     spec:
       containers:
         - name: app
-          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python:with-vectordot-python
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-java:with-vectordot-java
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
               value: "vector.vector.svc.cluster.local"
             - name: DOGSTATSD_PORT
               value: "9125"
-            - name: PYTHONUNBUFFERED
-              value: "1"
           resources:
             requests:
               cpu: 50m
@@ -288,6 +399,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 10001
             allowPrivilegeEscalation: false
+
 ```
 
 apply the yaml
@@ -304,8 +416,8 @@ kubectl describe pod <pod name> (metric-sender-66ff56f796-cwll4) -n vector
 verify 
 
 ```yaml
-kubectl get pods -l app=metric-sender-vectordot-python -n vector
-kubectl logs -f deploy/metric-sender-vectordot-python --tail=50 -n vector
+kubectl get pods -l app=metric-sender-vectordot-java -n vector
+kubectl logs -f deploy/metric-sender-vectordot-java --tail=50 -n vector
 ```
 
 ReApply
