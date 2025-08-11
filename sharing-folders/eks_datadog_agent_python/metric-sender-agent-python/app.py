@@ -19,7 +19,7 @@ failures = 0
 
 for i in range(1, MAX_TRIES + 1):
   try:
-    statsd.increment("ingestion_datadog", tags=["app:py-dogstatsd", "env:dev"])
+    statsd.increment("ingestion_datadog_agent_python", tags=["app:datadog_agent_python", "env:dev"])
     print(f"[{i}/{MAX_TRIES}] queued metric (DogStatsD)")
   except Exception as e:
     failures += 1
