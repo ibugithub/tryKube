@@ -25,17 +25,12 @@ create a vector-values.yaml file
 
 ```yaml
 cat > vector-values.yaml <<'YAML'
-role: "Aggregator"
+role: "Agent"
 replicaCount: 1
-
 service:
-  enabled: true
-  type: ClusterIP
-  ports:
-    - name: statsd
-      port: 9125
-      targetPort: 9125
-      protocol: UDP
+  enabled: false
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
 
 env:
   - name: DD_API_KEY
@@ -46,23 +41,25 @@ env:
 
 customConfig:
   data_dir: /vector-data-dir
+
   sources:
     statsd:
       type: statsd
       address: "0.0.0.0:9125"
       mode: udp
+
   sinks:
     datadog_metrics:
       type: datadog_metrics
       inputs: ["statsd"]
       default_api_key: "${DD_API_KEY}"
       site: "us5.datadoghq.com"
+
     console:
       type: console
       inputs: ["statsd"]
       encoding:
         codec: json
-
 YAML
 ```
 
@@ -385,7 +382,9 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
-              value: "vector.vector.svc.cluster.local"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
             - name: DOGSTATSD_PORT
               value: "9125"
           resources:

@@ -21,7 +21,9 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
-              value: "vector.vector.svc.cluster.local"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
             - name: DOGSTATSD_PORT
               value: "9125"
             - name: PYTHONUNBUFFERED

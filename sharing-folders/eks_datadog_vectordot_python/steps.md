@@ -18,24 +18,20 @@ create secret key
 
 ```yaml
 kubectl -n vector create secret generic datadog-secret \
-  --from-literal=api-key='5cdea018....'
+  --from-literal=api-key='5cdea018e3f97b9fbfd267fe342bb3a8'
 ```
 
 create a vector-values.yaml file
 
 ```yaml
 cat > vector-values.yaml <<'YAML'
-role: "Aggregator"
+role: "Agent"
 replicaCount: 1
 
 service:
-  enabled: true
-  type: ClusterIP
-  ports:
-    - name: statsd
-      port: 9125
-      targetPort: 9125
-      protocol: UDP
+  enabled: false
+hostNetwork: true
+dnsPolicy: ClusterFirstWithHostNet
 
 env:
   - name: DD_API_KEY
@@ -46,6 +42,7 @@ env:
 
 customConfig:
   data_dir: /vector-data-dir
+  
   sources:
     statsd:
       type: statsd
@@ -272,7 +269,9 @@ spec:
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
-              value: "vector.vector.svc.cluster.local"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
             - name: DOGSTATSD_PORT
               value: "9125"
             - name: PYTHONUNBUFFERED
@@ -288,6 +287,7 @@ spec:
             runAsNonRoot: true
             runAsUser: 10001
             allowPrivilegeEscalation: false
+
 ```
 
 apply the yaml
