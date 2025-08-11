@@ -1,4 +1,4 @@
-role: "Aggregator"          # run as a single Deployment
+role: "Aggregator"
 replicaCount: 1
 
 service:
@@ -10,16 +10,30 @@ service:
       targetPort: 9125
       protocol: UDP
 
+env:
+  - name: DD_API_KEY
+    valueFrom:
+      secretKeyRef:
+        name: datadog-secret
+        key: api-key
+
 customConfig:
   data_dir: /vector-data-dir
   sources:
     statsd:
       type: statsd
-      address: "0.0.0.0:9125"   # listen on UDP 9125
-      mode: "udp"
+      address: "0.0.0.0:9125"
+      mode: udp
   sinks:
+    datadog_metrics:
+      type: datadog_metrics
+      inputs: ["statsd"]
+      default_api_key: "${DD_API_KEY}"
+      site: "us5.datadoghq.com"
     console:
       type: console
       inputs: ["statsd"]
       encoding:
         codec: json
+
+

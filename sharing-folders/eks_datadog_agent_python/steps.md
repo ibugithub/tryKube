@@ -287,14 +287,14 @@ kubectl -n datadog describe pod <pod name> (metric-sender-66ff56f796-cwll4)
 verify 
 
 ```yaml
-kubectl -n datadog rollout status deploy/metric-sender-agent-python
-kubectl -n datadog get pods -l app=metric-sender-agent-python -n datadog
-kubectl -n datadog logs -f deploy/metric-sender-agent-python --tail=50
+kubectl rollout status deploy/metric-sender-agent-python -n datadog 
+kubectl get pods -l app=metric-sender-agent-python -n datadog
+kubectl logs -f deploy/metric-sender-agent-python --tail=50 -n datadog
 ```
 
 ReApply
 
 ```yaml
-kubectl apply -f deployment.yaml
-kubectl -n datadog rollout status deploy/metric-sender-agent-python
+kubectl apply -f deployment.yaml -n datadog
+kubectl rollout status deploy/metric-sender-agent-python -n datadog 
 ```
