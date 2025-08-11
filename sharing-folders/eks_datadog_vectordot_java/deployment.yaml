@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: metric-sender-vectordot-python
+  namespace: vector
+  labels:
+    app: metric-sender-vectordot-python
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: metric-sender-vectordot-python
+  template:
+    metadata:
+      labels:
+        app: metric-sender-vectordot-python
+    spec:
+      containers:
+        - name: app
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python:with-vectordot-python
+          imagePullPolicy: Always
+          env:
+            - name: DOGSTATSD_HOST
+              value: "vector.vector.svc.cluster.local"
+            - name: DOGSTATSD_PORT
+              value: "9125"
+            - name: PYTHONUNBUFFERED
+              value: "1"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            allowPrivilegeEscalation: false
