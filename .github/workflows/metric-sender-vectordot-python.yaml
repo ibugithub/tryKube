@@ -34,5 +34,5 @@ jobs:
           ECR_REPOSITORY: metric-sender-with-vectordot-python
           IMAGE_TAG: with-vectordot-python
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_vectordot_python/metric-sender-vectordot-python
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_vectordot_python/metric-sender-vectordot-python-app
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
