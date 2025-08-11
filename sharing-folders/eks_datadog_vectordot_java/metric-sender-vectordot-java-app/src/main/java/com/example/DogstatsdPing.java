@@ -38,10 +38,10 @@ public class DogstatsdPing {
     for (int i = 1; i <= MAX_TRIES; i++) {
       try {
         client.count(metric, 1, tags);
-        System.out.printf("[%d/%d] queued metric (DogStatsD)%n", i, MAX_TRIES);
+        System.out.printf("[%d/%d] queued metric_v2 (DogStatsD)%n", i, MAX_TRIES);
       } catch (Exception e) {
         failures++;
-        System.out.printf("[%d/%d] FAILED to send metric: %s%n", i, MAX_TRIES, e);
+        System.out.printf("[%d/%d] FAILED to send metric_v2 : %s%n", i, MAX_TRIES, e);
       }
       Thread.sleep(5000);
     }

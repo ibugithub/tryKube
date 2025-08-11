@@ -18,7 +18,7 @@ failures = 0
 
 for i in range(1, MAX_TRIES + 1):
     try:
-        statsd.increment("ingestion_vectordot-python", tags=["app:vectordot-python"])
+        statsd.increment("ingestion_vectordot-python_v2", tags=["app:vectordot-python"])
         print(f"[{i}/{MAX_TRIES}] queued ingestion_vectordev")
     except Exception as e:
         failures += 1
