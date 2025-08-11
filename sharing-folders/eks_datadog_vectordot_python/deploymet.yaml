@@ -3,8 +3,6 @@ kind: Deployment
 metadata:
   name: metric-sender-agent-python
   namespace: datadog
-  labels:
-    app: metric-sender-agent-python
 spec:
   replicas: 1
   selector:
@@ -17,23 +15,19 @@ spec:
     spec:
       containers:
         - name: app
-          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-agent-python:with-agent-python
+          image: <ACCOUNT_ID>.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-agent-python:vector-v1
           imagePullPolicy: Always
           env:
+            # Point to Vector Service (cross-namespace DNS)
             - name: DOGSTATSD_HOST
-              valueFrom:
-                fieldRef:
-                  fieldPath: status.hostIP
+              value: "vector.vector.svc.cluster.local"
+            - name: DOGSTATSD_PORT
+              value: "9125"
             - name: PYTHONUNBUFFERED
               value: "1"
-
           resources:
-            requests:
-              cpu: 50m
-              memory: 64Mi
-            limits:
-              cpu: 200m
-              memory: 128Mi
+            requests: { cpu: 50m, memory: 64Mi }
+            limits:   { cpu: 200m, memory: 128Mi }
           securityContext:
             runAsNonRoot: true
             runAsUser: 10001

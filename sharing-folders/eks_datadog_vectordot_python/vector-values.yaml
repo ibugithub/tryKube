@@ -1,0 +1,25 @@
+role: "Aggregator"          # run as a single Deployment
+replicaCount: 1
+
+service:
+  enabled: true
+  type: ClusterIP
+  ports:
+    - name: statsd
+      port: 9125
+      targetPort: 9125
+      protocol: UDP
+
+customConfig:
+  data_dir: /vector-data-dir
+  sources:
+    statsd:
+      type: statsd
+      address: "0.0.0.0:9125"   # listen on UDP 9125
+      mode: "udp"
+  sinks:
+    console:
+      type: console
+      inputs: ["statsd"]
+      encoding:
+        codec: json

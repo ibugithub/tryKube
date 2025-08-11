@@ -35,7 +35,7 @@ kubectl get ns datadog
 ```yaml
 kubectl create secret generic datadog-secret \
   -n datadog \
-  --from-literal api-key='5cdea01...'
+  --from-literal api-key='5cdea018e3f97b9fbfd267fe342bb3a8'
 ```
 
 You can verify that your `datadog-secret` was created in the `datadog` namespace with:
@@ -288,19 +288,13 @@ verify
 
 ```yaml
 kubectl -n datadog rollout status deploy/metric-sender-agent-python
-kubectl -n datadog get pods -l app=metric-sender-agent-python -o wide
+kubectl -n datadog get pods -l app=metric-sender-agent-python -n datadog
 kubectl -n datadog logs -f deploy/metric-sender-agent-python --tail=50
 ```
 
-## Make Python logs unbuffered (so you can see them)
+ReApply
 
-Patch your Deployment to add `PYTHONUNBUFFERED=1`:
-
-```bash
-kubectl -n datadog patch deploy metric-sender-agent-python --type='json' -p='[
-  {"op":"add","path":"/spec/template/spec/containers/0/env/-","value":{"name":"PYTHONUNBUFFERED","value":"1"}}
-]'
-
+```yaml
+kubectl apply -f deployment.yaml
 kubectl -n datadog rollout status deploy/metric-sender-agent-python
-kubectl -n datadog logs -f deploy/metric-sender-agent-python --tail=50
 ```

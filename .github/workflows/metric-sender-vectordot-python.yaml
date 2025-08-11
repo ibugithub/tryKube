@@ -1,0 +1,38 @@
+name: Build and Push metric-sender-with-vectordot to ECR
+
+on:
+  push:
+    paths:
+      - 'sharing-folders/eks_datadog_vectordot_python/**'
+      - '.github/workflows/metric-sender-vectordot-python.yaml'
+    branches:
+      - main
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: us-east-2
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and Push metric-sender-with-vectordot-python to ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: metric-sender-with-vectordot-python
+          IMAGE_TAG: with-vectordot-python
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_vectordot_python/metric-sender-vectordot-python
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
