@@ -7,7 +7,7 @@ on:
       - '.github/workflows/metric-sender-vectordot-python.yaml'
     branches:
       - main
-
+      
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
