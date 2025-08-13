@@ -1,8 +1,14 @@
 role: "Agent"
 service:
   enabled: false
-hostNetwork: true
+
+podHostNetwork: true
 dnsPolicy: ClusterFirstWithHostNet
+
+containerPorts:
+  - name: statsd
+    containerPort: 9125
+    protocol: UDP
 
 env:
   - name: DD_API_KEY
@@ -11,14 +17,9 @@ env:
         name: datadog-secret
         key: api-key
 
-containerPorts:
-  - name: statsd
-    containerPort: 9125
-    protocol: UDP
 
 customConfig:
   data_dir: /vector-data-dir
-
   sources:
     statsd:
       type: statsd

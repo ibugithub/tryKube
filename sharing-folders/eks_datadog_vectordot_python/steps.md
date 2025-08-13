@@ -26,12 +26,16 @@ create a vector-values.yaml file
 ```yaml
 cat > vector-values.yaml <<'YAML'
 role: "Agent"
-replicaCount: 1
-
 service:
   enabled: false
-hostNetwork: true
+
+podHostNetwork: true
 dnsPolicy: ClusterFirstWithHostNet
+
+containerPorts:
+  - name: statsd
+    containerPort: 9125
+    protocol: UDP
 
 env:
   - name: DD_API_KEY
@@ -42,7 +46,6 @@ env:
 
 customConfig:
   data_dir: /vector-data-dir
-  
   sources:
     statsd:
       type: statsd
@@ -177,7 +180,7 @@ CMD ["python", "app.py"]
 Create ECR
 
 ```yaml
-aws ecr create-repository --repository-name metric-sender-with-vectordot-python
+aws ecr create-repository --repository-name metric-sender-with-vectordot-python-app
 ```
 
 Create a .github/workflows/metric-sender-with-agent-python.yaml file
@@ -249,23 +252,23 @@ create a deployment.yaml and use the full image_uri
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metric-sender-vectordot-python
+  name: metric-sender-vectordot-python-app
   namespace: vector
   labels:
-    app: metric-sender-vectordot-python
+    app: metric-sender-vectordot-python-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: metric-sender-vectordot-python
+      app: metric-sender-vectordot-python-app
   template:
     metadata:
       labels:
-        app: metric-sender-vectordot-python
+        app: metric-sender-vectordot-python-app
     spec:
       containers:
         - name: app
-          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python:with-vectordot-python
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python-app:with-vectordot-python
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
@@ -304,8 +307,8 @@ kubectl describe pod <pod name> (metric-sender-66ff56f796-cwll4) -n vector
 verify 
 
 ```yaml
-kubectl get pods -l app=metric-sender-vectordot-python -n vector
-kubectl logs -f deploy/metric-sender-vectordot-python --tail=50 -n vector
+kubectl get pods -l app=metric-sender-vectordot-python-app -n vector
+kubectl logs -f deploy/metric-sender-vectordot-python-app --tail=50 -n vector
 ```
 
 ReApply

@@ -28,8 +28,14 @@ cat > vector-values.yaml <<'YAML'
 role: "Agent"
 service:
   enabled: false
-hostNetwork: true
+
+podHostNetwork: true
 dnsPolicy: ClusterFirstWithHostNet
+
+containerPorts:
+  - name: statsd
+    containerPort: 9125
+    protocol: UDP
 
 env:
   - name: DD_API_KEY
@@ -40,7 +46,6 @@ env:
 
 customConfig:
   data_dir: /vector-data-dir
-
   sources:
     statsd:
       type: statsd
@@ -59,6 +64,7 @@ customConfig:
       inputs: ["statsd"]
       encoding:
         codec: json
+
 YAML
 ```
 
@@ -87,7 +93,7 @@ kubectl -n vector get sts
 kubectl  rollout status sts/vector -n vector
 
 # pod + logs
-kubectl get pods -n vector -n vector
+kubectl get pods -n vector
 ```
 
 ## Check the Service & port 9125/UDP
