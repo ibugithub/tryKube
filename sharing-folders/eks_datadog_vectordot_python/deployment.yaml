@@ -9,7 +9,7 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: metric-sender-vectordot-python
+      app: metric-sender-vectordot-python-app
   template:
     metadata:
       labels:
