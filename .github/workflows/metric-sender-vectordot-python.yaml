@@ -1,4 +1,4 @@
-name: Build and Push metric-sender-with-vectordot to ECR
+name: Build and Push metric-sender-with-vectordot-python-app to ECR
 
 on:
   push:
@@ -28,10 +28,10 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build and Push metric-sender-with-vectordot-python to ECR
+      - name: Build and Push metric-sender-with-vectordot-python-app to ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: metric-sender-with-vectordot-python
+          ECR_REPOSITORY: metric-sender-with-vectordot-python-app
           IMAGE_TAG: with-vectordot-python
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG ./sharing-folders/eks_datadog_vectordot_python/metric-sender-vectordot-python-app

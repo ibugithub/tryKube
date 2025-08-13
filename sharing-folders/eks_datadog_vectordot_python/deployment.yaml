@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: metric-sender-vectordot-python
+  name: metric-sender-vectordot-python-app
   namespace: vector
   labels:
-    app: metric-sender-vectordot-python
+    app: metric-sender-vectordot-python-app
 spec:
   replicas: 1
   selector:
@@ -13,11 +13,11 @@ spec:
   template:
     metadata:
       labels:
-        app: metric-sender-vectordot-python
+        app: metric-sender-vectordot-python-app
     spec:
       containers:
         - name: app
-          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python:with-vectordot-python
+          image: 156583401143.dkr.ecr.us-east-2.amazonaws.com/metric-sender-with-vectordot-python-app:with-vectordot-python
           imagePullPolicy: Always
           env:
             - name: DOGSTATSD_HOST
