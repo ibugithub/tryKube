@@ -20,10 +20,10 @@ failures = 0
 for i in range(1, MAX_TRIES + 1):
   try:
     statsd.increment("ingestion_datadog_agent_python_v3", tags=["app:datadog_agent_python_v3", "env:dev"])
-    print(f"[{i}/{MAX_TRIES}] queued metric_v3 (DogStatsD)")
+    print(f"[{i}/{MAX_TRIES}] queued metric_v3 to dd (DogStatsD)")
   except Exception as e:
     failures += 1
-    print(f"[{i}/{MAX_TRIES}] FAILED to send metric_v3: {e}")
+    print(f"[{i}/{MAX_TRIES}] FAILED to send metric_v3 to dd: {e}")
   time.sleep(5)
 
 print(f"Done. Attempts={MAX_TRIES}, Failures={failures}")
