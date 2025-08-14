@@ -18,11 +18,11 @@ failures = 0
 
 for i in range(1, MAX_TRIES + 1):
     try:
-        statsd.increment("ingestion_vectordot_python_v2", tags=["app:vectordot_python"])
-        print(f"[{i}/{MAX_TRIES}] queued ingestion_vectordot-python_v2 to dd")
+        statsd.increment("ingestion_vectordot_python_v3", tags=["app:vectordot_python_v3"])
+        print(f"[{i}/{MAX_TRIES}] queued ingestion_vectordot-python_v3 to dd")
     except Exception as e:
         failures += 1
-        print(f"[{i}/{MAX_TRIES}] FAILED to send metric ingestion_vectordot_python_v2 to dd: {e}")
+        print(f"[{i}/{MAX_TRIES}] FAILED to send metric ingestion_vectordot_python_v3 to dd: {e}")
     if i < MAX_TRIES:
         time.sleep(5)
 

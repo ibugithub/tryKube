@@ -24,15 +24,29 @@ customConfig:
       type: statsd
       address: "0.0.0.0:9125"
       mode: udp
+  transforms:
+    add_env_identifier_tags:
+      type: remap
+      inputs: ["statsd"]
+      source: |
+        .tags.env = get_env_var!("CLUSTER_ENV")
+    aggregate_statsd:
+      type: aggregator
+      inputs: ["add_env_identifier_tags"]
+      flush_interval_secs: 10   
+      group_by: ["name", "tags"]
+      merge_strategies:
+        sum: ["count"]
+        avg: ["gauge"]
   sinks:
     datadog_metrics:
       type: datadog_metrics
-      inputs: ["statsd"]
+      inputs: ["aggregate_statsd"]
       default_api_key: "${DD_API_KEY}"
       site: "us5.datadoghq.com"
     console:
       type: console
-      inputs: ["statsd"]
+      inputs: ["aggregate_statsd"]
       encoding:
         codec: json
 
