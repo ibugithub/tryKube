@@ -11,6 +11,8 @@ containerPorts:
     protocol: UDP
 
 env:
+  - name: CLUSTER_ENV
+    value: dev
   - name: DD_API_KEY
     valueFrom:
       secretKeyRef:
@@ -31,13 +33,11 @@ customConfig:
       source: |
         .tags.env = get_env_var!("CLUSTER_ENV")
     aggregate_statsd:
-      type: aggregator
+      type: aggregate
       inputs: ["add_env_identifier_tags"]
-      flush_interval_secs: 10   
-      group_by: ["name", "tags"]
-      merge_strategies:
-        sum: ["count"]
-        avg: ["gauge"]
+      interval_ms: 10000   
+      mode: Auto
+
   sinks:
     datadog_metrics:
       type: datadog_metrics
